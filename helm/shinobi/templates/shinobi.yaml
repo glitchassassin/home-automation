@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shinobi.fullname" . }}
+  labels:
+    {{- include "shinobi.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "shinobi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "shinobi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "shinobi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.shinobi.image.repository }}:{{ .Values.shinobi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.shinobi.image.pullPolicy }}
+          env:
+            - name: PLUGIN_KEYS
+              value: "{{ if .Values.tensorflow.enabled }}\"Tensorflow\":\"{{ .Values.tensorflow.key }}\"{{ end }}"
+            - name: SSL_ENABLED
+              value: {{ quote .Values.shinobi.sslEnabled }}
+          volumeMounts:
+            # - mountPath: {{ .Values.shinobi.volume.mountPath }}
+            #   name: {{ .Values.shinobi.volume.name }}
+            - mountPath: /dev/shm/streams
+              name: streams
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: {{ .Values.shinobi.volume.name }}
+          persistentVolumeClaim:
+            claimName: {{ include "shinobi.fullname" . }}-pv-claim
+        - name: streams
+          emptyDir:
+            medium: "Memory"
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
