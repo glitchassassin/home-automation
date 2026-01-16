@@ -2,10 +2,15 @@
     # Cloudflare DNS challenge for SSL certificate provisioning
     email jon.winsley@gmail.com
     dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    # Prefer DNS challenge and disable other challenge types
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
 }
 
 # TrueNAS reverse proxy
 truenas.jonwinsley.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
     reverse_proxy 10.0.0.3:444 {
         header_up Host {host}
         header_up X-Real-IP {remote}
@@ -16,6 +21,9 @@ truenas.jonwinsley.com {
 
 # Pi-hole reverse proxy
 pihole.jonwinsley.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
     reverse_proxy 10.0.0.3:20720 {
         header_up Host {host}
         header_up X-Real-IP {remote}
