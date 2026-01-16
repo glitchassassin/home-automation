@@ -31,3 +31,16 @@ pihole.jonwinsley.com {
         header_up X-Forwarded-Proto {scheme}
     }
 }
+
+# Calibre reverse proxy
+calibre.jonwinsley.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+    reverse_proxy 10.0.0.3:32015 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
