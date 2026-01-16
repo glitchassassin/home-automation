@@ -11,7 +11,7 @@ truenas.jonwinsley.com {
     tls {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
     }
-    reverse_proxy 10.0.0.3:444 {
+    reverse_proxy 10.0.0.3:81 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
