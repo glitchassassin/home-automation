@@ -14,8 +14,6 @@ truenas.jonwinsley.com {
     reverse_proxy 10.0.0.3:81 {
         header_up Host {host}
         header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
     }
 }
 
@@ -27,8 +25,6 @@ pihole.jonwinsley.com {
     reverse_proxy 10.0.0.3:20720 {
         header_up Host {host}
         header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
     }
 }
 
@@ -40,7 +36,5 @@ calibre.jonwinsley.com {
     reverse_proxy 10.0.0.3:32015 {
         header_up Host {host}
         header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
     }
 }
