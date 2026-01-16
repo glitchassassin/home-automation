@@ -1,0 +1,25 @@
+{
+    # Cloudflare DNS challenge for SSL certificate provisioning
+    email jon.winsley@gmail.com
+    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+# TrueNAS reverse proxy
+truenas.jonwinsley.com {
+    reverse_proxy 10.0.0.3:444 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Pi-hole reverse proxy
+pihole.jonwinsley.com {
+    reverse_proxy 10.0.0.3:20720 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
