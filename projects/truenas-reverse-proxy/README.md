@@ -46,10 +46,12 @@ services:
    - Edit `Caddyfile` and replace `your-email@example.com` with your email address
    - Add any additional routes as needed
 
-4. **Start the Service**
+4. **Build and Start the Service**
    ```bash
-   docker-compose up -d
+   docker-compose up -d --build
    ```
+   
+   Note: The Caddyfile is baked into the Docker image, so you'll need to rebuild the image after making changes to it.
 
 ## Adding New Routes
 
@@ -66,10 +68,12 @@ newservice.jonwinsley.com {
 }
 ```
 
-Then restart the container:
+Then rebuild and restart the container:
 ```bash
-docker-compose restart
+docker-compose up -d --build
 ```
+
+Note: Since the Caddyfile is baked into the image, you must rebuild the image after making changes. If using the pre-built image from GitHub Container Registry, push your changes and wait for the GitHub Actions workflow to build and publish a new image.
 
 ## Current Routes
 
