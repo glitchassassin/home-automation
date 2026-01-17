@@ -38,3 +38,14 @@ calibre.jonwinsley.com {
         header_up X-Real-IP {remote}
     }
 }
+
+# Home Assistant reverse proxy
+homeassistant.jonwinsley.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+    reverse_proxy 10.0.0.10:8123 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+    }
+}
